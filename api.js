@@ -1,9 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 const bd      = require("./dbconnection");
-const port    = process.env.PORT || 3000;
+const port    = process.env.PORT || 3500;
 
 const api = express();  // aqui nossa máquina vira um site (application server)
 
+
+api.use(cors());
 // vamos definir as várias rotas que precisamos
 
 api.get("/produtos",  async (req, res) => {
@@ -25,14 +28,14 @@ api.get("/produtos/:codigo", async (req, res) => {
         const idProduto = req.params["codigo"];
         console.log("ID recuperado = "+req.params["codigo"]);
         const resultado = await bd.getProdutoPorId(idProduto);
-        if (resultado.length == 0){
+        if (!resultado){
             res.status(404); // status 404 indica NOT FOUND, ou seja, não encontrei o produto com o ID especificado
             res.send("NOT FOUND");
         }
         else{
-            const produto = resultado[0];
+            // const produto = resultado[0];
             res.status(200);
-            res.json(produto);
+            res.json(resultado);
         }
     }
     catch(erro){
